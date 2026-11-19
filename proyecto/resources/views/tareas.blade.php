@@ -97,6 +97,7 @@
       <div class="campo">
         <label for="descripcion">Descripción</label>
         <textarea id="descripcion" name="descripcion" rows="3"></textarea>
+        <small class="error-campo" id="error-descripcion"></small>
       </div>
 
       <div class="campos-en-fila">

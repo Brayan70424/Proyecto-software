@@ -20,6 +20,7 @@ function validarTarea(datos) {
   const errores = {};
   if (!datos.nombre) errores.nombre = 'Escribe el nombre de la tarea.';
   else if (datos.nombre.length > 80) errores.nombre = 'El nombre no puede tener más de 80 caracteres.';
+  if (datos.descripcion && datos.descripcion.length > 2000) errores.descripcion = 'La descripción no puede tener más de 2000 caracteres.';
   if (!datos.fecha_inicio) errores.fecha_inicio = 'Elige la fecha de inicio.';
   if (!datos.fecha_fin) errores.fecha_fin = 'Elige la fecha de fin.';
   else if (datos.fecha_inicio && datos.fecha_fin < datos.fecha_inicio) errores.fecha_fin = 'La fecha de fin no puede ser anterior a la fecha de inicio.';

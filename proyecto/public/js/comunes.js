@@ -1,4 +1,4 @@
-const CAMPOS_CON_ERROR = ['nombre', 'fecha_inicio', 'fecha_fin', 'estado'];
+const CAMPOS_CON_ERROR = ['nombre', 'descripcion', 'fecha_inicio', 'fecha_fin', 'estado'];
 
 let actualizarPagina = function () {};
 let idTareaEnEdicion = null;

@@ -29,7 +29,7 @@
 
     <div class="zona-principal">
       <header class="barra-superior">
-        <form class="buscador" role="search" action="tareas.html" method="get">
+        <form class="buscador" role="search" action="{{ route('tareas') }}" method="get">
           <i class="bx bx-search"></i>
           <input id="buscador-tareas" type="search" name="busqueda" placeholder="Buscar tareas..." aria-label="Buscar tareas">
         </form>
@@ -90,7 +90,7 @@
                   <span class="sobre-titulo">Este mes</span>
                   <h2 id="titulo-mini-calendario"></h2>
                 </div>
-                <a href="calendario.html">Ver calendario</a>
+                <a href="{{ route('calendario') }}">Ver calendario</a>
               </header>
               <div class="mini-calendario" id="mini-calendario"></div>
             </section>
@@ -103,9 +103,9 @@
                 </div>
               </header>
               <ul class="lista-estados">
-                <li><a href="tareas.html?estado=Pendiente"><span class="punto punto-pendiente"></span><span>Pendiente</span><strong id="cantidad-pendiente">0</strong></a></li>
-                <li><a href="tareas.html?estado=En+progreso"><span class="punto punto-en-progreso"></span><span>En progreso</span><strong id="cantidad-en-progreso">0</strong></a></li>
-                <li><a href="tareas.html?estado=Completada"><span class="punto punto-completada"></span><span>Completada</span><strong id="cantidad-completada">0</strong></a></li>
+                <li><a href="{{ route('tareas', ['estado' => 'Pendiente']) }}"><span class="punto punto-pendiente"></span><span>Pendiente</span><strong id="cantidad-pendiente">0</strong></a></li>
+                <li><a href="{{ route('tareas', ['estado' => 'En progreso']) }}"><span class="punto punto-en-progreso"></span><span>En progreso</span><strong id="cantidad-en-progreso">0</strong></a></li>
+                <li><a href="{{ route('tareas', ['estado' => 'Completada']) }}"><span class="punto punto-completada"></span><span>Completada</span><strong id="cantidad-completada">0</strong></a></li>
               </ul>
             </section>
           </div>

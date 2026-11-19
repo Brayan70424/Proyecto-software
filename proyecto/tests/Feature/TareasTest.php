@@ -53,16 +53,62 @@ class TareasTest extends TestCase
         $this->postJson('/api/tareas', $datos)->assertUnprocessable()->assertJsonValidationErrors(['nombre', 'fecha_fin']);
     }
 
-    public function test_no_autenticado_no_puede_consultar_ni_crear_tareas(): void
+    private function datosValidos(): array
     {
-        $this->getJson('/api/tareas')->assertUnauthorized();
-        $this->postJson('/api/tareas', [])->assertUnauthorized();
+        return ['nombre' => 'Tarea', 'descripcion' => 'Detalle', 'fecha_inicio' => '2026-11-18', 'fecha_fin' => '2026-11-20', 'estado' => 'Pendiente'];
     }
 
-    public function test_no_acepta_estados_no_permitidos(): void
+    public function test_consulta_los_datos_completos_de_una_tarea(): void
     {
         $this->usuarioAutenticado();
-        $datos = ['nombre' => 'Tarea', 'fecha_inicio' => '2026-11-18', 'fecha_fin' => '2026-11-18', 'estado' => 'Cancelada'];
-        $this->postJson('/api/tareas', $datos)->assertUnprocessable()->assertJsonValidationErrors('estado');
+        $id = $this->postJson('/api/tareas', $this->datosValidos())->json('id');
+
+        $this->getJson('/api/tareas/'.$id)->assertOk()
+            ->assertJsonPath('nombre', 'Tarea')
+            ->assertJsonPath('descripcion', 'Detalle')
+            ->assertJsonPath('fecha_inicio', '2026-11-18')
+            ->assertJsonPath('fecha_fin', '2026-11-20')
+            ->assertJsonPath('estado', 'Pendiente');
     }
+
+    public function test_tarea_inexistente_responde_404(): void
+    {
+        $this->usuarioAutenticado();
+
+        $this->getJson('/api/tareas/9999')->assertNotFound();
+        $this->putJson('/api/tareas/9999', $this->datosValidos())->assertNotFound();
+        $this->deleteJson('/api/tareas/9999')->assertNotFound();
+    }
+
+    public function test_no_autenticado_no_puede_ver_editar_ni_eliminar(): void
+    {
+        $this->getJson('/api/tareas/1')->assertUnauthorized();
+        $this->putJson('/api/tareas/1', $this->datosValidos())->assertUnauthorized();
+        $this->deleteJson('/api/tareas/1')->assertUnauthorized();
+    }
+
+    public function test_usuario_no_puede_tocar_tareas_de_otro_usuario(): void
+    {
+        $this->usuarioAutenticado();
+        $id = $this->postJson('/api/tareas', $this->datosValidos())->json('id');
+
+        $otro = Usuario::create(['nombre' => 'Otro', 'correo' => 'otro@test.com', 'password' => 'password123']);
+        $this->actingAs($otro);
+
+        $this->getJson('/api/tareas')->assertOk()->assertJsonCount(0);
+        $this->getJson('/api/tareas/'.$id)->assertNotFound();
+        $this->putJson('/api/tareas/'.$id, $this->datosValidos())->assertNotFound();
+        $this->deleteJson('/api/tareas/'.$id)->assertNotFound();
+        $this->assertDatabaseHas('tareas', ['id' => $id]);
+    }
+
+    public function test_acepta_fecha_fin_igual_a_fecha_inicio(): void
+    {
+        $this->usuarioAutenticado();
+        $datos = $this->datosValidos();
+        $datos['fecha_fin'] = $datos['fecha_inicio'];
+
+        $this->postJson('/api/tareas', $datos)->assertCreated();
+    }
+
 }

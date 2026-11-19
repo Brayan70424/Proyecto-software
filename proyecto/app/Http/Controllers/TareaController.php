@@ -18,6 +18,11 @@ class TareaController extends Controller
         return response()->json($this->tareasDelUsuario($request)->orderBy('fecha_inicio')->get());
     }
 
+    public function show(Request $request, int $id)
+    {
+        return response()->json($this->tareasDelUsuario($request)->findOrFail($id));
+    }
+
     public function store(Request $request)
     {
         $datos = $this->validar($request);
@@ -50,6 +55,7 @@ class TareaController extends Controller
         ], [
             'nombre.required' => 'Escribe el nombre de la tarea.',
             'nombre.max' => 'El nombre no puede tener más de 80 caracteres.',
+            'descripcion.max' => 'La descripción no puede tener más de 2000 caracteres.',
             'fecha_inicio.required' => 'Elige la fecha de inicio.',
             'fecha_fin.required' => 'Elige la fecha de fin.',
             'fecha_fin.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',

@@ -44,7 +44,8 @@ Route::middleware(['auth', NoCacheHeaders::class])->group(function () {
     
     Route::get('/tareas', function () { return view('tareas'); })->name('tareas');
     Route::get('/api/tareas', [TareaController::class, 'index'])->name('api.tareas.index');
-    Route::post('/api/tareas', [TareaController::class, 'store'])->name('api.tareas.store');
+    Route::get('/api/tareas/{id}', [TareaController::class, 'show'])->whereNumber('id')->name('api.tareas.show');
+    Route::post('/api/tareas',[TareaController::class, 'store'])->name('api.tareas.store');
     Route::put('/api/tareas/{id}', [TareaController::class, 'update'])->whereNumber('id')->name('api.tareas.update');
     Route::delete('/api/tareas/{id}', [TareaController::class, 'destroy'])->whereNumber('id')->name('api.tareas.destroy');
 
